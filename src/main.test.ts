@@ -1,4 +1,4 @@
-import main from "../src/main" 
+import main from "./main" 
 
 describe('JustMainJestTest', () => {
   describe('do dis work?', () => {
