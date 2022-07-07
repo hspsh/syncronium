@@ -1,0 +1,1 @@
+class SimpleEventPublisher extends EventPublisher{}
