@@ -1,5 +1,10 @@
-export default function heh() {
-  return "Hi world";
+import fetchMeetupEvents from "./services/meetup/iCalService";
+
+async function main() {
+  const events = await fetchMeetupEvents(
+    "turkusowe-śniadania-o-biznesie-inaczej"
+  );
+  console.log(events);
 }
 
-console.log(heh());
+main();
