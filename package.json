@@ -22,10 +22,11 @@
   },
   "homepage": "https://github.com/hspsh/syncronium#readme",
   "dependencies": {
+    "node-ical": "^0.15.1"
   },
   "devDependencies": {
-    "@types/node": "^18.0.3",
     "@types/jest": "^28.1.4",
+    "@types/node": "^18.0.3",
     "eslint-config-prettier": "^8.5.0",
     "husky": "^8.0.0",
     "jest": "^28.1.2",
