@@ -1,3 +1,3 @@
-import { DiscordAdapter } from "./DiscordAdapter";
+import { DiscordService } from "./DiscordService";
 
-new DiscordAdapter();
+new DiscordService();
