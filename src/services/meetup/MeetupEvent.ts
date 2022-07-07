@@ -7,7 +7,7 @@ export default class MeetupEvent {
     public location: String,
     public url: String,
     public uid: String,
-    // public lastModified: String,
+    public lastModified: Date,
     // public dtStamp: Date,
     public dtStart: Date,
     public dtEnd: Date
