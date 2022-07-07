@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node src/main.ts",
-    "dev": "nodemon src/main.ts"
+    "dev": "nodemon src/main.ts",
+    "lint": "prettier --write ."
   },
   "repository": {
     "type": "git",
@@ -24,8 +25,10 @@
   },
   "devDependencies": {
     "@types/jest": "^28.1.4",
+    "eslint-config-prettier": "^8.5.0",
     "jest": "^28.1.2",
     "nodemon": "^2.0.19",
+    "prettier": "2.7.1",
     "ts-jest": "^28.0.5",
     "ts-node": "^10.8.2"
   }
