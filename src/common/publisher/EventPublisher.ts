@@ -1,7 +1,7 @@
-import {EventMessage} from "../messages/EventMessage";
+import { EventMessage } from "../messages/EventMessage";
 
 export interface EventPublisher {
-    publish(message: EventMessage): Promise<void>
+  publish(message: EventMessage): Promise<void>;
 
-    subscribe(callback: (message: EventMessage) => Promise<void>): void
+  subscribe(callback: (message: EventMessage) => Promise<void>): void;
 }

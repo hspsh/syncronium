@@ -1,2 +1,1 @@
-export class EventMessage {
-}
+export class EventMessage {}
