@@ -4,11 +4,12 @@ import {
   Snowflake,
   TextChannel,
 } from "discord.js";
+import "dotenv/config";
+
 import { REST } from "@discordjs/rest";
 import { SimpleDiscordEvent } from "./DiscordEvent";
 
-const token =
-  "OTk0Njg5MzU3MTQxMjYyNDE3.GA1Bmx.gNUDIOSx1F3CnlL92_1rolFVzt5G5YEtCU1RQY";
+const token = process.env.DISCORD_API_KEY || "";
 
 const guildId = "621300560481615892";
 
