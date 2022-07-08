@@ -15,6 +15,8 @@ export class KnexLinkedEventRepository implements LinkedEventRepository {
   private constructor(protected knex: Knex) {}
 
   private async migrate() {
+    if (await this.knex.schema.hasTable("linked_events")) return;
+
     await this.knex.schema.createTableIfNotExists(
       "linked_events",
       (builder) => {

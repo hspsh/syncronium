@@ -4,19 +4,16 @@ import {
 } from "discord.js";
 
 export class SimpleDiscordEvent {
-  tainted = false;
+  static maxSizeOfDescription = 1000;
 
   constructor(
-    public id: string,
     public name: string,
     public description: string,
     public location: string,
     public startDate: Date,
     public endDate: Date
-  ) {}
-
-  taint() {
-    this.tainted = true;
+  ) {
+    description = description.slice(0, SimpleDiscordEvent.maxSizeOfDescription);
   }
 
   toCreate(): GuildScheduledEventCreateOptions {

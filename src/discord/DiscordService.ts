@@ -4,64 +4,52 @@ import {
   Snowflake,
   TextChannel,
 } from "discord.js";
-import "dotenv/config";
 
 import { REST } from "@discordjs/rest";
 import { SimpleDiscordEvent } from "./DiscordEvent";
 
-const token = process.env.DISCORD_API_KEY || "";
-
-const guildId = "621300560481615892";
-
 export class DiscordService {
   client?: Client = undefined;
 
-  constructor() {
-    this.init();
-  }
+  protected constructor(public guildId: string) {}
 
-  async init() {
-    const rest = new REST({ version: "10" }).setToken(token);
+  init(token: string) {
+    return new Promise<void>((resolve, reject) => {
+      const rest = new REST({ version: "10" }).setToken(token);
 
-    rest.on("restDebug", (event) => {
-      console.log(event);
+      rest.on("restDebug", (event) => {
+        console.log(event);
+      });
+
+      let client = new Client({
+        intents: ["GUILDS", "GUILD_SCHEDULED_EVENTS", "GUILD_MESSAGES"],
+      });
+
+      client.on("ready", () => {
+        console.log("DISCORD: READY!!!");
+
+        this.client = client;
+        this.sendMessage("Dobri Dzień");
+
+        resolve();
+      });
+
+      client.on("error", (error) => {
+        console.error(error);
+        reject(error);
+      });
+
+      client.on("debug", (msg) => {
+        console.log(msg);
+      });
+
+      client.login(token);
     });
-
-    let client = new Client({
-      intents: ["GUILDS", "GUILD_SCHEDULED_EVENTS", "GUILD_MESSAGES"],
-    });
-
-    client.on("ready", () => {
-      console.log("DISCORD: READY!!!");
-      this.client = client;
-      this.sendMessage("Dobri Dzień");
-
-      this.createEvent(
-        new SimpleDiscordEvent(
-          "",
-          "BOTY WAS ZJEDZĄ",
-          "TAK DOBRZE CZYTASZ, BOTY WAS ZJEDZĄ",
-          "W HSP CI NIE POMORZE",
-          new Date(new Date().getTime() + 1000 * 3600 * 24 * 1),
-          new Date(new Date().getTime() + 1000 * 3600 * 24 * 2)
-        )
-      );
-    });
-
-    client.on("error", (error) => {
-      console.error(error);
-    });
-
-    client.on("debug", (msg) => {
-      console.log(msg);
-    });
-
-    return client.login(token);
   }
 
   async sendMessage(msg: string) {
     // hsp pomorze - 621300560481615892
-    this.client?.guilds.fetch(guildId).then((guild) => {
+    this.client?.guilds.fetch(this.guildId).then((guild) => {
       const channel = guild.channels.valueOf().find((x) => x.name == "bots");
       if (channel && channel.type == "GUILD_TEXT") {
         const textCh = channel as TextChannel;
@@ -75,9 +63,9 @@ export class DiscordService {
 
   async createEvent(event: SimpleDiscordEvent): Promise<Snowflake> {
     return this.client?.guilds
-      .fetch(guildId)
+      .fetch(this.guildId)
       .then((x) => x.scheduledEvents.create(event.toCreate()))
-      .then((x) => x.entityId)
+      .then((x) => x.id)
       .catch((x) => console.error(x)) as Promise<Snowflake>;
   }
 
@@ -86,9 +74,24 @@ export class DiscordService {
     event: SimpleDiscordEvent
   ): Promise<void> {
     await this.client?.guilds
-      .fetch(guildId)
+      .fetch(this.guildId)
       .then((x) => x.scheduledEvents.edit(oldEvent, event.toModify()))
-      .then((x) => x.entityId)
+      .then((x) => x.id)
       .catch((x) => console.error(x));
+  }
+
+  async findEventById(
+    id: Snowflake
+  ): Promise<GuildScheduledEvent | null | undefined> {
+    return this.client?.guilds
+      .fetch(this.guildId)
+      .then((x) => x.scheduledEvents.fetch())
+      .then((x) => x.find((event) => event.id == id));
+  }
+
+  static async create(guildId: string, token: string) {
+    const service = new DiscordService(guildId);
+    await service.init(token);
+    return service;
   }
 }
