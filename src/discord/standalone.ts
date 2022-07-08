@@ -1,35 +1,16 @@
-import { DiscordService } from "./DiscordService";
-import { DiscordEventConsumer } from "./EventConsumer";
-import { KnexLinkedEventRepository } from "./EventRepository";
-import { knex } from "knex";
 import { EventCreatedMessage } from "../common/messages/EventCreatedMessage";
 import { EventState } from "../common/messages/EventState";
 import { EventModifiedMessage } from "../common/messages/EventModifiedMessage";
-import "dotenv/config";
-
-const token = process.env.DISCORD_API_KEY || "";
-const guildId = "621300560481615892";
+import { SimpleEventPublisher } from "../common/publisher/SimpleEventPublisher";
+import { DiscordAdapter } from "./DiscordAdapter";
 
 async function main() {
-  const db = knex({
-    client: "better-sqlite3",
-    connection: {
-      filename: "./discord.db",
-    },
-  });
+  const eventPublisher = new SimpleEventPublisher();
 
-  const eventRepository = await KnexLinkedEventRepository.create(db);
-  const discordService = await DiscordService.create(guildId, token);
+  await DiscordAdapter.createWithSqlite(eventPublisher);
 
-  console.log("GOING FULL");
-
-  const eventConsumer = new DiscordEventConsumer(
-    discordService,
-    eventRepository
-  );
-
-  await eventConsumer
-    .handle(
+  await eventPublisher
+    .publish(
       new EventCreatedMessage(
         new EventState(
           "dummy123",
@@ -45,8 +26,8 @@ async function main() {
     )
     .catch((x) => console.error(x));
 
-  await eventConsumer
-    .handle(
+  await eventPublisher
+    .publish(
       new EventModifiedMessage(
         new EventState(
           "dummy123",

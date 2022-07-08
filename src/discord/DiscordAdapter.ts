@@ -2,15 +2,21 @@ import { EventMessage } from "../common/messages/EventMessage";
 import { EventCreatedMessage } from "../common/messages/EventCreatedMessage";
 import { EventModifiedMessage } from "../common/messages/EventModifiedMessage";
 import { DiscordService } from "./DiscordService";
-import { LinkedEventRepository } from "./EventRepository";
+import {
+  KnexLinkedEventRepository,
+  LinkedEventRepository,
+} from "./EventRepository";
 import { SimpleDiscordEvent } from "./DiscordEvent";
 import { EventState } from "../common/messages/EventState";
+import "dotenv/config";
+import { EventPublisher } from "../common/publisher/EventPublisher";
+import knex from "knex";
 
-export interface EventConsumer {
+export interface DiscordAdapter {
   handle(eventMessage: EventMessage): Promise<void>;
 }
 
-export class DiscordEventConsumer implements EventConsumer {
+export class DiscordAdapter implements DiscordAdapter {
   constructor(
     protected discordService: DiscordService,
     protected eventRepository: LinkedEventRepository
@@ -79,5 +85,26 @@ export class DiscordEventConsumer implements EventConsumer {
       new Date(eventState.startDate),
       new Date(eventState.endDate)
     );
+  }
+
+  static async createWithSqlite(eventPublisher: EventPublisher) {
+    const token = process.env.DISCORD_API_KEY || "";
+    const guildId = "621300560481615892"; // TODO
+
+    const db = knex({
+      client: "better-sqlite3",
+      connection: {
+        filename: "./discord.db",
+      },
+    });
+
+    const eventRepository = await KnexLinkedEventRepository.create(db);
+    const discordService = await DiscordService.create(guildId, token);
+
+    const discordAdapter = new DiscordAdapter(discordService, eventRepository);
+
+    eventPublisher.subscribe((message) => discordAdapter.handle(message));
+
+    return discordAdapter;
   }
 }
