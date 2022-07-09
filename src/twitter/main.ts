@@ -18,3 +18,7 @@ const client = new Twitter({
 export default async function sendTweet(tweetMessage: string) {
   client.v1.tweet(tweetMessage).catch(console.error);
 }
+
+export async function sendTweetResponse(id: string, tweetMessage: string) {
+  client.v1.reply(tweetMessage, id).catch(console.error);
+}
