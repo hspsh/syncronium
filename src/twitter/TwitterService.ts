@@ -15,10 +15,25 @@ const client = new Twitter({
     : "",
 });
 
-export default async function sendTweet(tweetMessage: string) {
-  client.v1.tweet(tweetMessage).catch(console.error);
+export async function sendTweet(
+  tweetMessage: string
+): Promise<{ id_str: string }> {
+  try {
+    const res = client.v1.tweet(tweetMessage);
+    return res;
+  } catch (err: any) {
+    throw err;
+  }
 }
 
-export async function sendTweetResponse(id: string, tweetMessage: string) {
-  client.v1.reply(tweetMessage, id).catch(console.error);
+export async function sendTweetResponse(
+  id: string,
+  tweetMessage: string
+): Promise<{ id_str: string }> {
+  try {
+    const res = client.v1.reply(tweetMessage, id);
+    return res;
+  } catch (err: any) {
+    throw err;
+  }
 }
