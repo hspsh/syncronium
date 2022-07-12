@@ -5,6 +5,11 @@ on:
     branches:
       - "master"
 
+env:
+  DOCKER_USER: psuwala
+  DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
+  DOCKER_REPO: psuwala
+
 jobs:
   docker:
     runs-on: ubuntu-latest
