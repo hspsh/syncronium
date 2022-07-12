@@ -9,7 +9,7 @@
     "startDiscord": "ts-node src/discord/standalone.ts",
     "dev": "nodemon src/main.ts",
     "lint": "prettier --write .",
-    "prepare": "husky install"
+    "prepare": "husky install || true"
   },
   "repository": {
     "type": "git",

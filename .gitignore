@@ -4,3 +4,4 @@ storage/
 .vscode/
 .idea/
 discord.db
+dist/
