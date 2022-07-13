@@ -7,11 +7,6 @@ export async function runApplication() {
   const eventPublisher = new SimpleEventPublisher();
 
   await DiscordAdapter.createWithSqlite(eventPublisher);
-}
-
-async function main() {
-  const eventPublisher = new SimpleEventPublisher();
-
   const meetupAdapter = await MeetupAdapter.createWithSQlite(
     eventPublisher,
     "turkusowe-śniadania-o-biznesie-inaczej"
@@ -23,5 +18,3 @@ async function main() {
     meetupAdapter.trigger();
   }, 15 * 60 * 1000); //15 minutes
 }
-
-main();
