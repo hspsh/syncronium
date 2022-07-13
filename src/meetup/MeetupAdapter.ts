@@ -8,24 +8,34 @@ import {
   KnexMeetupEventRepository,
   DatabaseEntry,
 } from "./EventRepository";
+import { EventPublisher } from "../common/publisher/EventPublisher";
 
-export interface MeetupAdapter {
-  getUpdates(groupName: String): Promise<EventMessage[]>;
+export interface MeetupAdapterI {
+  trigger(): Promise<void>;
 }
 
-export class MeetupAdapter implements MeetupAdapter {
-  constructor(protected eventRepository: MeetupEventRepository) {}
+export class MeetupAdapter implements MeetupAdapterI {
+  constructor(
+    protected eventRepository: MeetupEventRepository,
+    protected publisher: EventPublisher,
+    protected groupName: string
+  ) {}
 
-  async getUpdates(groupName: String) {
-    const freshEvents = await this.fetchMeetupEvents(groupName);
+  async trigger() {
+    const messages: EventMessage[] = await this.getUpdates();
+    messages.forEach((message) => this.publisher.publish(message));
+  }
+
+  protected async getUpdates() {
+    const freshEvents = await this.fetchMeetupEvents();
     const lastEvents = await this.eventRepository.getAll();
 
     return this.compareEvents(lastEvents, freshEvents);
   }
 
-  async fetchMeetupEvents(groupName: String): Promise<MeetupEvent[]> {
+  protected async fetchMeetupEvents(): Promise<MeetupEvent[]> {
     const url = encodeURI(
-      `https://www.meetup.com/pl-PL/${groupName}/events/ical/`
+      `https://www.meetup.com/pl-PL/${this.groupName}/events/ical/`
     );
     const eventsData = await ical.async.fromURL(url);
     const eventsList: MeetupEvent[] = [];
@@ -72,7 +82,7 @@ export class MeetupAdapter implements MeetupAdapter {
     return returnList;
   }
 
-  static async createWithSQlite() {
+  static async createWithSQlite(publisher: EventPublisher, groupName: string) {
     const db = knex({
       client: "better-sqlite3",
       connection: {
@@ -81,7 +91,7 @@ export class MeetupAdapter implements MeetupAdapter {
     });
 
     const meetupRepo = await KnexMeetupEventRepository.create(db);
-    const meetupAdapter = new MeetupAdapter(meetupRepo);
+    const meetupAdapter = new MeetupAdapter(meetupRepo, publisher, groupName);
 
     return meetupAdapter;
   }

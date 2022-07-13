@@ -10,11 +10,16 @@ export async function runApplication() {
 }
 
 async function main() {
-  const meetupAdapter = await MeetupAdapter.createWithSQlite();
+  const eventPublisher = new SimpleEventPublisher();
 
-  await meetupAdapter.fetchMeetupEvents(
+  const meetupAdapter = await MeetupAdapter.createWithSQlite(
+    eventPublisher,
     "turkusowe-śniadania-o-biznesie-inaczej"
   );
+
+  setInterval(() => {
+    meetupAdapter.trigger();
+  }, 15 * 60 * 1000); //15 minutes
 }
 
 main();
