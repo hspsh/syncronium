@@ -1,0 +1,9 @@
+version: "3.9" # optional since v1.27.0
+services:
+  syncronium:
+    image: ${REPO_NAME}/syncronium:${IMAGE_TAG}
+    restart: always
+    volumes:
+      - type: bind
+        source: ${DATA_DIR}
+        target: /data

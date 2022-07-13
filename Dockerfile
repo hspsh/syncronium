@@ -1,8 +1,8 @@
 ARG NODE_VERSION
 FROM node:${NODE_VERSION}
 
-VOLUME /mnt/volume
-ENV DATA_DIR=/mnt/volume
+VOLUME /data
+ENV DATA_DIR=/data
 
 WORKDIR /app
 ADD . .
