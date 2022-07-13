@@ -1,4 +1,4 @@
-import MeetupAdapter from "./services/meetup/MeetupAdapter";
+import MeetupAdapter from "./meetup/MeetupAdapter";
 import knex from "knex";
 import { SimpleEventPublisher } from "./common/publisher/SimpleEventPublisher";
 import { DiscordAdapter } from "./discord/DiscordAdapter";
@@ -21,7 +21,7 @@ async function main() {
   const meetupAdapter = new MeetupAdapter(conn);
   meetupAdapter.createDatabaseIfNotExists();
 
-  const events = await meetupAdapter.fetchMeetupEvents(
+  await meetupAdapter.fetchMeetupEvents(
     "turkusowe-śniadania-o-biznesie-inaczej"
   );
 }
