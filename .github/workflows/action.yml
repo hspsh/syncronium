@@ -8,7 +8,7 @@ on:
 env:
   DOCKER_USER: psuwala
   DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
-  DOCKER_REPO: psuwala
+  DOCKER_REPO: ksidelta
 
 jobs:
   docker:
