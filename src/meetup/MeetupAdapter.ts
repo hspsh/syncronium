@@ -1,14 +1,27 @@
 import ical from "node-ical";
 import knex from "knex";
 
+import { EventMessage } from "../common/messages/EventMessage";
 import MeetupEvent from "./MeetupEvent";
 import {
   MeetupEventRepository,
   KnexMeetupEventRepository,
+  DatabaseEntry,
 } from "./EventRepository";
 
-export default class MeetupAdapter {
+export interface MeetupAdapter {
+  getUpdates(groupName: String): Promise<EventMessage[]>;
+}
+
+export class MeetupAdapter implements MeetupAdapter {
   constructor(protected eventRepository: MeetupEventRepository) {}
+
+  async getUpdates(groupName: String) {
+    const freshEvents = await this.fetchMeetupEvents(groupName);
+    const lastEvents = await this.eventRepository.getAll();
+
+    return this.compareEvents(lastEvents, freshEvents);
+  }
 
   async fetchMeetupEvents(groupName: String): Promise<MeetupEvent[]> {
     const url = encodeURI(
@@ -37,7 +50,27 @@ export default class MeetupAdapter {
     return eventsList;
   }
 
-  // compareEvents(oldEvents: DatabaseEntry[], newEvents: MeetupEvent[]) { }
+  protected compareEvents(
+    oldEvents: DatabaseEntry[],
+    freshEvents: MeetupEvent[]
+  ): EventMessage[] {
+    const returnList: EventMessage[] = [];
+
+    freshEvents.forEach((freshEvent) => {
+      const matchingOldEvent = oldEvents.find(
+        (oldEvent) => oldEvent.uid === freshEvent.uid
+      );
+
+      if (matchingOldEvent === undefined) {
+        returnList.push(freshEvent.toEventCreatedMessage());
+      } else {
+        if (matchingOldEvent.lastModified !== freshEvent.lastModified)
+          returnList.push(freshEvent.toEventModifiedMessage);
+      }
+    });
+
+    return returnList;
+  }
 
   static async createWithSQlite() {
     const db = knex({

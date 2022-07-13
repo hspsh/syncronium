@@ -1,4 +1,4 @@
-import MeetupAdapter from "./meetup/MeetupAdapter";
+import { MeetupAdapter } from "./meetup/MeetupAdapter";
 import { SimpleEventPublisher } from "./common/publisher/SimpleEventPublisher";
 import { DiscordAdapter } from "./discord/DiscordAdapter";
 

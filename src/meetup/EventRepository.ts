@@ -1,5 +1,4 @@
 import { Knex } from "knex";
-import MeetupEvent from "./MeetupEvent";
 
 export interface DatabaseEntry {
   id: Number;
@@ -9,9 +8,7 @@ export interface DatabaseEntry {
 }
 
 export interface MeetupEventRepository {
-  addEvent(meetupEvent: MeetupEvent): Promise<void>;
-
-  findById(externalId: string): Promise<MeetupEvent | null>;
+  getAll(): Promise<DatabaseEntry[]>;
 }
 
 export class KnexMeetupEventRepository implements MeetupEventRepository {
@@ -27,10 +24,6 @@ export class KnexMeetupEventRepository implements MeetupEventRepository {
       table.dateTime("lastModified");
       table.timestamps();
     });
-  }
-  async addEvent(meetupEvent: MeetupEvent): Promise<void> {}
-  async findById(externalId: string): Promise<MeetupEvent | null> {
-    return null;
   }
 
   async getAll(): Promise<DatabaseEntry[]> {
