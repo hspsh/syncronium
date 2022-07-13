@@ -17,6 +17,8 @@ async function main() {
     "turkusowe-śniadania-o-biznesie-inaczej"
   );
 
+  meetupAdapter.trigger();
+
   setInterval(() => {
     meetupAdapter.trigger();
   }, 15 * 60 * 1000); //15 minutes

@@ -1,7 +1,6 @@
 import ical from "node-ical";
 import knex from "knex";
 
-import { EventMessage } from "../common/messages/EventMessage";
 import MeetupEvent from "./MeetupEvent";
 import {
   MeetupEventRepository,
@@ -9,6 +8,11 @@ import {
   DatabaseEntry,
 } from "./EventRepository";
 import { EventPublisher } from "../common/publisher/EventPublisher";
+
+interface ComparisonResult {
+  newEvents: MeetupEvent[];
+  modifiedEvents: MeetupEvent[];
+}
 
 export interface MeetupAdapterI {
   trigger(): Promise<void>;
@@ -22,8 +26,10 @@ export class MeetupAdapter implements MeetupAdapterI {
   ) {}
 
   async trigger() {
-    const messages: EventMessage[] = await this.getUpdates();
-    messages.forEach((message) => this.publisher.publish(message));
+    const events = await this.getUpdates();
+
+    await this.publishEvents(events);
+    await this.storeEvents(events);
   }
 
   protected async getUpdates() {
@@ -63,8 +69,9 @@ export class MeetupAdapter implements MeetupAdapterI {
   protected compareEvents(
     oldEvents: DatabaseEntry[],
     freshEvents: MeetupEvent[]
-  ): EventMessage[] {
-    const returnList: EventMessage[] = [];
+  ): ComparisonResult {
+    const newEvents: MeetupEvent[] = [];
+    const modifiedEvents: MeetupEvent[] = [];
 
     freshEvents.forEach((freshEvent) => {
       const matchingOldEvent = oldEvents.find(
@@ -72,14 +79,49 @@ export class MeetupAdapter implements MeetupAdapterI {
       );
 
       if (matchingOldEvent === undefined) {
-        returnList.push(freshEvent.toEventCreatedMessage());
+        newEvents.push(freshEvent);
       } else {
         if (matchingOldEvent.lastModified !== freshEvent.lastModified)
-          returnList.push(freshEvent.toEventModifiedMessage);
+          modifiedEvents.push(freshEvent);
       }
     });
 
-    return returnList;
+    return {
+      newEvents,
+      modifiedEvents,
+    };
+  }
+
+  protected async publishEvents(events: ComparisonResult): Promise<void> {
+    const handlers: Promise<any>[] = [];
+
+    events.newEvents.forEach((event) => {
+      const message = event.toEventCreatedMessage();
+      const handler = this.publisher.publish(message);
+      handlers.push(handler);
+    });
+    events.modifiedEvents.forEach((event) => {
+      const message = event.toEventModifiedMessage();
+      const handler = this.publisher.publish(message);
+      handlers.push(handler);
+    });
+
+    await Promise.all(handlers);
+  }
+
+  protected async storeEvents(events: ComparisonResult): Promise<void> {
+    const handlers: Promise<any>[] = [];
+
+    events.newEvents.forEach((event) => {
+      const handler = this.eventRepository.addEvent(event);
+      handlers.push(handler);
+    });
+    events.modifiedEvents.forEach((event) => {
+      const handler = this.eventRepository.updateEvent(event.uid, event);
+      handlers.push(handler);
+    });
+
+    await Promise.all(handlers);
   }
 
   static async createWithSQlite(publisher: EventPublisher, groupName: string) {

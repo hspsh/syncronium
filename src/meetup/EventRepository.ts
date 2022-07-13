@@ -1,4 +1,5 @@
 import { Knex } from "knex";
+import MeetupEvent from "./MeetupEvent";
 
 export interface DatabaseEntry {
   id: Number;
@@ -9,6 +10,8 @@ export interface DatabaseEntry {
 
 export interface MeetupEventRepository {
   getAll(): Promise<DatabaseEntry[]>;
+  addEvent(event: MeetupEvent): Promise<void>;
+  updateEvent(uid: string, event: MeetupEvent): Promise<void>;
 }
 
 export class KnexMeetupEventRepository implements MeetupEventRepository {
@@ -17,7 +20,7 @@ export class KnexMeetupEventRepository implements MeetupEventRepository {
   private async migrate() {
     if (await this.db.schema.hasTable("events")) return;
 
-    await this.db.schema.createTableIfNotExists("events", (table) => {
+    await this.db.schema.createTable("events", (table) => {
       table.increments();
       table.string("summary");
       table.string("uid");
@@ -28,6 +31,26 @@ export class KnexMeetupEventRepository implements MeetupEventRepository {
 
   async getAll(): Promise<DatabaseEntry[]> {
     return await this.db<DatabaseEntry>("events").where("id");
+  }
+
+  async addEvent(event: MeetupEvent): Promise<void> {
+    await this.db<DatabaseEntry>("events").insert({
+      uid: event.uid,
+      summary: event.summary,
+      lastModified: event.lastModified,
+    });
+  }
+
+  async updateEvent(uid: string, event: MeetupEvent): Promise<void> {
+    await this.db<DatabaseEntry>("events")
+      .update({
+        uid: event.uid,
+        summary: event.summary,
+        lastModified: event.lastModified,
+      })
+      .where({
+        uid,
+      });
   }
 
   static async create(knex: Knex): Promise<KnexMeetupEventRepository> {
