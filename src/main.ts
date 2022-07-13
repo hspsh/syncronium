@@ -18,3 +18,5 @@ export async function runApplication() {
     meetupAdapter.trigger();
   }, 15 * 60 * 1000); //15 minutes
 }
+
+runApplication();
