@@ -24,13 +24,17 @@ export class KnexMeetupEventRepository implements MeetupEventRepository {
       table.increments();
       table.string("summary");
       table.string("uid");
-      table.dateTime("lastModified");
-      table.timestamps();
+      table.dateTime("lastModified", { precision: 6 });
     });
   }
 
   async getAll(): Promise<DatabaseEntry[]> {
-    return await this.db.select("*").from<DatabaseEntry>("events");
+    return (await this.db.select("*").from<DatabaseEntry>("events")).map(
+      (event) => {
+        event.lastModified = new Date(event.lastModified); //convert timestap to Date
+        return event;
+      }
+    );
   }
 
   async addEvent(event: MeetupEvent): Promise<void> {
