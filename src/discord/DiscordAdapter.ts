@@ -81,7 +81,7 @@ export class DiscordAdapter implements DiscordAdapter {
     return new SimpleDiscordEvent(
       eventState.title,
       eventState.description || "default description",
-      eventState.location,
+      eventState.link || eventState.location,
       new Date(eventState.startDate),
       new Date(eventState.endDate)
     );
