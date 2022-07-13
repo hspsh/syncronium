@@ -1,30 +1,14 @@
 import ical from "node-ical";
-import { Knex } from "knex";
+import knex from "knex";
 
 import MeetupEvent from "./MeetupEvent";
-import DatabaseEntry from "./DatabaseEntry";
+import {
+  MeetupEventRepository,
+  KnexMeetupEventRepository,
+} from "./EventRepository";
 
 export default class MeetupAdapter {
-  constructor(private db: Knex<any, unknown[]>) {}
-
-  async doYourJob(groupName: String) {
-    this.createDatabaseIfNotExists();
-    const newEvents = await this.fetchMeetupEvents(groupName);
-    const oldEvents = await this.readOldEventsFromDatabase();
-
-    const reallyNewEvents = this.compareEvents(oldEvents, newEvents);
-    console.log(reallyNewEvents);
-  }
-
-  async createDatabaseIfNotExists() {
-    await this.db.schema.createTableIfNotExists("events", (table) => {
-      table.increments();
-      table.string("summary");
-      table.string("uid");
-      table.dateTime("lastModified");
-      table.timestamps();
-    });
-  }
+  constructor(protected eventRepository: MeetupEventRepository) {}
 
   async fetchMeetupEvents(groupName: String): Promise<MeetupEvent[]> {
     const url = encodeURI(
@@ -53,9 +37,19 @@ export default class MeetupAdapter {
     return eventsList;
   }
 
-  async readOldEventsFromDatabase() {
-    return await this.db<DatabaseEntry>("oldEvents").where("id");
-  }
+  // compareEvents(oldEvents: DatabaseEntry[], newEvents: MeetupEvent[]) { }
 
-  compareEvents(oldEvents: DatabaseEntry[], newEvents: MeetupEvent[]) {}
+  static async createWithSQlite() {
+    const db = knex({
+      client: "better-sqlite3",
+      connection: {
+        filename: "./meetup.db",
+      },
+    });
+
+    const meetupRepo = await KnexMeetupEventRepository.create(db);
+    const meetupAdapter = new MeetupAdapter(meetupRepo);
+
+    return meetupAdapter;
+  }
 }

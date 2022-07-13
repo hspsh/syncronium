@@ -1,5 +1,4 @@
 import MeetupAdapter from "./meetup/MeetupAdapter";
-import knex from "knex";
 import { SimpleEventPublisher } from "./common/publisher/SimpleEventPublisher";
 import { DiscordAdapter } from "./discord/DiscordAdapter";
 
@@ -11,15 +10,7 @@ export async function runApplication() {
 }
 
 async function main() {
-  const conn = knex({
-    client: "better-sqlite3",
-    connection: {
-      filename: "./storage/events.sqlite",
-    },
-  });
-
-  const meetupAdapter = new MeetupAdapter(conn);
-  meetupAdapter.createDatabaseIfNotExists();
+  const meetupAdapter = await MeetupAdapter.createWithSQlite();
 
   await meetupAdapter.fetchMeetupEvents(
     "turkusowe-śniadania-o-biznesie-inaczej"
