@@ -30,7 +30,7 @@ export class KnexMeetupEventRepository implements MeetupEventRepository {
   }
 
   async getAll(): Promise<DatabaseEntry[]> {
-    return await this.db<DatabaseEntry>("events").where("id");
+    return await this.db.select("*").from<DatabaseEntry>("events");
   }
 
   async addEvent(event: MeetupEvent): Promise<void> {
