@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: syncronium
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: syncronium
+  template:
+    metadata:
+      labels:
+        app: syncronium
+    spec:
+      containers:
+        - image: ksidelta/syncronium:{{ required ".Values.imageTag is required" .Values.imageTag }}
+          name: syncronium
+          envFrom:
+            - secretRef:
+                name: syncronium-secret
+          volumeMounts:
+            - name: data
+              mountPath: /data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: syncronium-data
