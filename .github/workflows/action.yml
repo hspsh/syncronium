@@ -11,7 +11,7 @@ env:
   DOCKER_REPO: ksidelta
   KUBECONFIG_DATA: ${{ secrets.KUBECONFIG_DATA }}
   DISCORD_API_KEY: ${{ secrets.DISCORD_API_KEY }}
-  DISCORD_GROUP: ${{secrets.DISCORD_GROUP}}
+  DISCORD_GROUP: ${{ secrets.DISCORD_GROUP }}
 
 jobs:
   docker:
