@@ -2,7 +2,14 @@
 
 lorem ipsum $ mit
 
-## Run
+## User Guide
+
+### Env variables
+
+- DISCORD_API_KEY - key
+-
+
+### Running
 
 ```sh
 🐧 npm install
