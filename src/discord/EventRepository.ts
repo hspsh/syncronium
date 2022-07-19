@@ -15,17 +15,7 @@ export class KnexLinkedEventRepository implements LinkedEventRepository {
   private constructor(protected knex: Knex) {}
 
   private async migrate() {
-    if (await this.knex.schema.hasTable("linked_events")) return;
-
-    await this.knex.schema.createTableIfNotExists(
-      "linked_events",
-      (builder) => {
-        builder.string("discord_event_id", 256);
-        builder.string("external_event_id", 256);
-        builder.primary(["external_event_id"]);
-        builder.unique(["discord_event_id"]);
-      }
-    );
+    await this.knex.migrate.latest({ directory: "src/discord/migrations" });
   }
 
   findByExternalId(externalId: string): Promise<LinkedEvent | null> {
