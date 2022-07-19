@@ -10,6 +10,7 @@ env:
   DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
   DOCKER_REPO: ksidelta
   KUBECONFIG_DATA: ${{ secrets.KUBECONFIG_DATA }}
+  DISCORD_API_KEY: ${{ secrets.DISCORD_API_KEY }}
 
 jobs:
   docker:
