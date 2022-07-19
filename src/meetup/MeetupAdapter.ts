@@ -128,7 +128,7 @@ export class MeetupAdapter implements MeetupAdapterI {
     const db = knex({
       client: "better-sqlite3",
       connection: {
-        filename: "./meetup.db",
+        filename: process.env.MEETUP_DATABASE_PATH || "./meetup.db",
       },
     });
 
