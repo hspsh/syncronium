@@ -1,9 +1,8 @@
-name: ci
+name: dev
 
 on:
   push:
     branches:
-      - "master"
       - "develop"
 
 env:
@@ -16,8 +15,9 @@ env:
   K8S_NAMESPACE: ${{ secrets.K8S_NAMESPACE }}
 
 jobs:
-  docker:
+  production:
     runs-on: ubuntu-latest
+    environment: Development 
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
