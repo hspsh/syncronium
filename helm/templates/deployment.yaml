@@ -19,7 +19,7 @@ spec:
             - name: MEETUP_GROUP_NAME
               value: "hspomo"
             - name: DISCORD_GROUP_ID
-              value: "944205611686584320"
+              value: "621300560481615892"
           envFrom:
             - secretRef:
                 name: syncronium-secret
