@@ -1,11 +1,6 @@
-import { knex } from "knex";
+import { createSqliteDb } from "../common/utils/db";
 
-const db = knex({
-  client: "better-sqlite3",
-  connection: {
-    filename: "./twitter.db",
-  },
-});
+const db = createSqliteDb("twitter.db");
 
 export interface LinkedEvent {
   externalId: string;

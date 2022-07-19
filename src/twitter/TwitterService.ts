@@ -1,5 +1,6 @@
 import Twitter from "twitter-api-v2";
 import * as dotenv from "dotenv";
+
 dotenv.config();
 
 const client = new Twitter({

@@ -1,5 +1,4 @@
 import ical from "node-ical";
-import knex from "knex";
 
 import MeetupEvent from "./MeetupEvent";
 import {
@@ -8,6 +7,7 @@ import {
   DatabaseEntry,
 } from "./EventRepository";
 import { EventPublisher } from "../common/publisher/EventPublisher";
+import { createSqliteDb } from "../common/utils/db";
 
 interface ComparisonResult {
   newEvents: MeetupEvent[];
@@ -125,12 +125,7 @@ export class MeetupAdapter implements MeetupAdapterI {
   }
 
   static async createWithSQlite(publisher: EventPublisher, groupName: string) {
-    const db = knex({
-      client: "better-sqlite3",
-      connection: {
-        filename: process.env.MEETUP_DATABASE_PATH || "./meetup.db",
-      },
-    });
+    const db = createSqliteDb("meetup.db");
 
     const meetupRepo = await KnexMeetupEventRepository.create(db);
     const meetupAdapter = new MeetupAdapter(meetupRepo, publisher, groupName);

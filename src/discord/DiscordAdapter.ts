@@ -10,7 +10,7 @@ import { SimpleDiscordEvent } from "./DiscordEvent";
 import { EventState } from "../common/messages/EventState";
 import "dotenv/config";
 import { EventPublisher } from "../common/publisher/EventPublisher";
-import knex from "knex";
+import { createSqliteDb } from "../common/utils/db";
 
 export interface DiscordAdapter {
   handle(eventMessage: EventMessage): Promise<void>;
@@ -91,12 +91,7 @@ export class DiscordAdapter implements DiscordAdapter {
     const token = process.env.DISCORD_API_KEY || "";
     const guildId = "944205611686584320"; // TODO
 
-    const db = knex({
-      client: "better-sqlite3",
-      connection: {
-        filename: "./discord.db",
-      },
-    });
+    const db = createSqliteDb("discord.db");
 
     const eventRepository = await KnexLinkedEventRepository.create(db);
     const discordService = await DiscordService.create(guildId, token);
