@@ -19,7 +19,7 @@ spec:
             - name: MEETUP_GROUP_NAME
               value: "hspomo"
             - name: DISCORD_GROUP_ID
-              value: "621300560481615892"
+              value: {{ required ".Values.discordGroup is required" .Values.discordGroup | quote }}
           envFrom:
             - secretRef:
                 name: syncronium-secret
