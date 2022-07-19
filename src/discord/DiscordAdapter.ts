@@ -89,7 +89,7 @@ export class DiscordAdapter implements DiscordAdapter {
 
   static async createWithSqlite(eventPublisher: EventPublisher) {
     const token = process.env.DISCORD_API_KEY || "";
-    const guildId = "944205611686584320"; // TODO
+    const guildId = process.env.DISCORD_GROUP_ID || "944205611686584320"; // TODO
 
     const db = createSqliteDb("discord.db");
 
