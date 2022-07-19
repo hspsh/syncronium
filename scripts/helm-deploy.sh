@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+set -x
 source scripts/commons.sh
 
 if [[ ! -z "$KUBECONFIG_DATA" ]]; then
