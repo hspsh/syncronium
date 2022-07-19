@@ -23,11 +23,11 @@ export class DiscordAdapter implements DiscordAdapter {
   ) {}
 
   async handle(eventMessage: EventMessage): Promise<void> {
-    switch (true) {
-      case eventMessage instanceof EventCreatedMessage:
+    switch (eventMessage.type) {
+      case "EventCreatedMessage":
         await this.handleCreated(eventMessage as EventCreatedMessage);
         break;
-      case eventMessage instanceof EventModifiedMessage:
+      case "EventModifiedMessage":
         await this.handleModified(eventMessage as EventModifiedMessage);
         break;
       default:

@@ -1,6 +1,5 @@
 import { EventCreatedMessage } from "../common/messages/EventCreatedMessage";
 import { EventModifiedMessage } from "../common/messages/EventModifiedMessage";
-import { EventState } from "../common/messages/EventState";
 
 export default class MeetupEvent {
   constructor(
@@ -17,33 +16,35 @@ export default class MeetupEvent {
     public dtEnd: Date
   ) {}
 
-  toEventCreatedMessage() {
-    return new EventCreatedMessage(
-      new EventState(
-        this.uid,
-        this.url,
-        this.summary,
-        this.description,
-        "image",
-        this.dtStart.toISOString(),
-        this.dtEnd.toISOString(),
-        this.location
-      )
-    );
+  toEventCreatedMessage(): EventCreatedMessage {
+    return {
+      type: "EventCreatedMessage",
+      state: {
+        id: this.uid,
+        link: this.url,
+        title: this.summary,
+        description: this.description,
+        image: "image",
+        startDate: this.dtStart.toISOString(),
+        endDate: this.dtEnd.toISOString(),
+        location: this.location,
+      },
+    };
   }
 
-  toEventModifiedMessage() {
-    return new EventModifiedMessage(
-      new EventState(
-        this.uid,
-        this.url,
-        this.summary,
-        this.description,
-        "image",
-        this.dtStart.toISOString(),
-        this.dtEnd.toISOString(),
-        this.location
-      )
-    );
+  toEventModifiedMessage(): EventModifiedMessage {
+    return {
+      type: "EventModifiedMessage",
+      state: {
+        id: this.uid,
+        link: this.url,
+        title: this.summary,
+        description: this.description,
+        image: "image",
+        startDate: this.dtStart.toISOString(),
+        endDate: this.dtEnd.toISOString(),
+        location: this.location,
+      },
+    };
   }
 }

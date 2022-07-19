@@ -1,8 +1,7 @@
-import { EventMessage } from "./EventMessage";
 import { EventState } from "./EventState";
+import { EventMessage } from "./EventMessage";
 
-export class EventCreatedMessage extends EventMessage {
-  constructor(public state: EventState) {
-    super();
-  }
+export interface EventCreatedMessage extends EventMessage {
+  type: "EventCreatedMessage";
+  state: EventState;
 }

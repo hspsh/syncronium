@@ -1,1 +1,3 @@
-export class EventMessage {}
+export interface EventMessage {
+  type: string;
+}
