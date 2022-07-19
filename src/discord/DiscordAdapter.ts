@@ -9,7 +9,7 @@ import {
 import { SimpleDiscordEvent } from "./DiscordEvent";
 import { EventState } from "../common/messages/EventState";
 import "dotenv/config";
-import { EventPublisher } from "../common/publisher/EventPublisher";
+import { EventPublisher } from "../publisher/EventPublisher";
 import { createSqliteDb } from "../common/utils/db";
 
 export interface DiscordAdapter {

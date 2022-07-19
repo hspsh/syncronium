@@ -1,7 +1,7 @@
 import "dotenv/config";
 
 import { MeetupAdapter } from "./meetup/MeetupAdapter";
-import { SimpleEventPublisher } from "./common/publisher/SimpleEventPublisher";
+import { SimpleEventPublisher } from "./publisher/SimpleEventPublisher";
 import { DiscordAdapter } from "./discord/DiscordAdapter";
 
 // Our application should look like this:

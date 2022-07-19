@@ -1,4 +1,4 @@
-import { EventMessage } from "../messages/EventMessage";
+import { EventMessage } from "../common/messages/EventMessage";
 
 export interface EventPublisher {
   publish(message: EventMessage): Promise<void>;

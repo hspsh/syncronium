@@ -6,7 +6,7 @@ import {
   KnexMeetupEventRepository,
   DatabaseEntry,
 } from "./EventRepository";
-import { EventPublisher } from "../common/publisher/EventPublisher";
+import { EventPublisher } from "../publisher/EventPublisher";
 import { createSqliteDb } from "../common/utils/db";
 
 interface ComparisonResult {

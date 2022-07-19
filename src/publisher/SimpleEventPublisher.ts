@@ -1,5 +1,5 @@
 import { EventPublisher, MetaEvent } from "./EventPublisher";
-import { EventMessage } from "../messages/EventMessage";
+import { EventMessage } from "../common/messages/EventMessage";
 
 type EventSubscriber = (
   message: EventMessage,
