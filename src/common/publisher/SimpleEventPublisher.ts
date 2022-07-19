@@ -8,13 +8,10 @@ type EventSubscriber = (
 
 export class SimpleEventPublisher implements EventPublisher {
   subscribers: EventSubscriber[] = [];
-  id: number = 0;
 
   async publish(message: EventMessage): Promise<void> {
-    const currentId = this.id++;
-
     await Promise.all(
-      this.subscribers.map((x) => x(message, { id: currentId }))
+      this.subscribers.map((x) => x(message, { id: new Date().getTime() }))
     ).catch((err) => `Failed to process ${message} because of ${err}`);
   }
 
