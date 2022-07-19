@@ -15,7 +15,7 @@ env:
   K8S_NAMESPACE: ${{ secrets.K8S_NAMESPACE }}
 
 jobs:
-  production:
+  dev:
     runs-on: ubuntu-latest
     environment: Development 
     steps:
