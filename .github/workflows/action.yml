@@ -13,6 +13,7 @@ env:
   KUBECONFIG_DATA: ${{ secrets.KUBECONFIG_DATA }}
   DISCORD_API_KEY: ${{ secrets.DISCORD_API_KEY }}
   DISCORD_GROUP: ${{ secrets.DISCORD_GROUP }}
+  K8S_NAMESPACE: ${{ secrets.K8S_NAMESPACE }}
 
 jobs:
   docker:
