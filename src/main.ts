@@ -4,6 +4,20 @@ import { MeetupAdapter } from "./meetup/MeetupAdapter";
 import { SimpleEventPublisher } from "./publisher/SimpleEventPublisher";
 import { DiscordAdapter } from "./discord/DiscordAdapter";
 
+function safeRunWithInterval(cb: () => void | Promise<any>, interval: number) {
+  const safeCb = async () => {
+    try {
+      await cb();
+    } catch (error) {
+      console.error(error);
+      console.error("Z nią się zawsze zgodzić trzeba");
+    }
+  };
+
+  safeCb();
+  return setInterval(safeCb, interval);
+}
+
 // Our application should look like this:
 export async function runApplication() {
   const meetup_group_name = process.env.MEETUP_GROUP_NAME || "hspomo";
@@ -17,11 +31,8 @@ export async function runApplication() {
     meetup_group_name
   );
 
-  meetupAdapter.trigger();
-
-  setInterval(() => {
-    meetupAdapter.trigger();
-  }, parseInt(meetup_poll_interval) * 60 * 1000);
+  const interval = parseInt(meetup_poll_interval) * 60 * 1000;
+  safeRunWithInterval(meetupAdapter.trigger, interval);
 }
 
 runApplication();
