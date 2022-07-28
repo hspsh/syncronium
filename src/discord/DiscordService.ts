@@ -39,8 +39,8 @@ export class DiscordService {
         reject(error);
       });
 
-      client.on("debug", (msg) => {
-        console.log(msg);
+      client.on("warn", (msg) => {
+        console.warn(msg);
       });
 
       client.login(token);
