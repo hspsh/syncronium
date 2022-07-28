@@ -32,7 +32,7 @@ export async function runApplication() {
   );
 
   const interval = parseInt(meetup_poll_interval) * 60 * 1000;
-  safeRunWithInterval(meetupAdapter.trigger, interval);
+  safeRunWithInterval(() => meetupAdapter.trigger(), interval);
 }
 
 runApplication();
