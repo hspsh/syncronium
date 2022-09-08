@@ -4,15 +4,13 @@ on:
   push:
     branches:
       - "master"
+    tags:
+      - v*
 
 env:
   DOCKER_USER: psuwala
   DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
   DOCKER_REPO: ksidelta
-  KUBECONFIG_DATA: ${{ secrets.KUBECONFIG_DATA }}
-  DISCORD_API_KEY: ${{ secrets.DISCORD_API_KEY }}
-  DISCORD_GROUP: ${{ secrets.DISCORD_GROUP }}
-  K8S_NAMESPACE: ${{ secrets.K8S_NAMESPACE }}
 
 jobs:
   production:
@@ -28,4 +26,3 @@ jobs:
       - uses: actions/checkout@v3
       - run: ./scripts/docker-build.sh
       - run: ./scripts/docker-deploy.sh
-      - run: ./scripts/helm-deploy.sh
