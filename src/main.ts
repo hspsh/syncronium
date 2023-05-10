@@ -20,7 +20,7 @@ function safeRunWithInterval(cb: () => void | Promise<any>, interval: number) {
 
 // Our application should look like this:
 export async function runApplication() {
-  const meetup_group_name = process.env.MEETUP_GROUP_NAME || "hspomo";
+  const meetup_group_name = process.env.MEETUP_GROUP_NAME || "hspomorze";
   const meetup_poll_interval = process.env.MEETUP_POLL_INTERVAL_MINUTES || "5";
 
   const eventPublisher = new SimpleEventPublisher();
