@@ -17,7 +17,7 @@ spec:
           name: syncronium
           env:
             - name: MEETUP_GROUP_NAME
-              value: "hspomo"
+              value: "hspomorze"
             - name: DISCORD_GROUP_ID
               value: {{ required ".Values.discordGroup is required" .Values.discordGroup | quote }}
           envFrom:
