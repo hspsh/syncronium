@@ -1,8 +1,8 @@
 import "dotenv/config";
 
-import { MeetupAdapter } from "./meetup/MeetupAdapter";
 import { SimpleEventPublisher } from "./publisher/SimpleEventPublisher";
 import { DiscordAdapter } from "./discord/DiscordAdapter";
+import { MeetupApiAdapter } from "./meetup/MeetupApiAdapter";
 
 function safeRunWithInterval(cb: () => void | Promise<any>, interval: number) {
   const safeCb = async () => {
@@ -26,7 +26,7 @@ export async function runApplication() {
   const eventPublisher = new SimpleEventPublisher();
 
   await DiscordAdapter.createWithSqlite(eventPublisher);
-  const meetupAdapter = await MeetupAdapter.createWithSQlite(
+  const meetupAdapter = await MeetupApiAdapter.createWithSQlite(
     eventPublisher,
     meetup_group_name
   );
